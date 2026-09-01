@@ -1,4 +1,7 @@
 package com.sist.web.vo;
+
+import lombok.Data;
+
 /*
  *  RCP_SEQ          NOT NULL NUMBER(10)    
 	RCP_NM                    VARCHAR2(200) 
@@ -18,6 +21,8 @@ package com.sist.web.vo;
 	USER_ID                   VARCHAR2(20)  
 	HIT                       NUMBER   
  */
+
+@Data
 public class RecipeVO {
 	private int rcp_seq;
     private String rcp_nm;

@@ -1,4 +1,7 @@
 package com.sist.web.vo;
+
+import lombok.Data;
+
 /*
  *  NO            NOT NULL NUMBER         
 	TITLE         NOT NULL VARCHAR2(1000) 
@@ -10,6 +13,7 @@ package com.sist.web.vo;
 	CONTENT                CLOB           
 	IMAGES                 CLOB  
  */
+@Data
 public class CourseVO {
 	private int no,student_count,pay_price,regular_price;
 	private String title,content,images;
