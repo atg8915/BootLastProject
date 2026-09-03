@@ -80,13 +80,13 @@ jobs:
           EOF
      - name: SCP docker-compose
        run: |
-         ssh ubuntu@52.79.237.13 "mkdir -p /home/ubuntu/app"
-         scp docker-compose.yml ubuntu@3.35.11.75:/home/ubuntu/app/docker-compose.yml
+         ssh ubuntu@52.79.237.136 "mkdir -p /home/ubuntu/app"
+         scp docker-compose.yml ubuntu@52.79.237.136:/home/ubuntu/app/docker-compose.yml
     
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
-         ssh ubuntu@52.79.237.13 << 'EOF'
+         ssh ubuntu@52.79.237.136 << 'EOF'
           cd /home/ubuntu/app
           docker-compose pull
           docker-compose down
