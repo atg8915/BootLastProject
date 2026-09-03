@@ -82,5 +82,5 @@ jobs:
           docker stop last-app || true  
           docker rm last-app || true
           docker pull ${{secrets.DOCKERHUB_NAME}}/last-app:latest
-          docker run -d --name last-app -p 9090:9090 ${{secrets.DOCKERHUB_NAME}}/last-app:latest
+          docker run -d --name last-app -p 9090:9090 ${{secrets.DOCKERHUB_NAME}}/last-app:latest .
          EOF
