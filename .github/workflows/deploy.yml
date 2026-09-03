@@ -14,10 +14,9 @@ jobs:
     #  name = stage = step
     steps:
      # 어떤 소스를 가지고 올지 => src / build.grade gradlew Dockerfile
-     #코드 체크 (Repository)
      - name: Checkout:repository
        uses: actions/checkout@v4
-     #JDK 설정 => SpringBoot프로젝트를 build => JDK 설정 
+     # JDK 설정 => SpringBoot프로젝트를 build => JDK 설정 
      - name: SetUp JDK 21
        uses: actions/setup-java@v4
        with:
@@ -25,17 +24,7 @@ jobs:
          distribution: 'temurin'
          java-version: '21'
      # 환경 설정 
-     # DB관련 => .env 
-     - name: 환경설정
-       run: |
-          # 기존의 파일 삭제
-          rm -f .env
-          # 새로운 .env 생성 
-          touch .env
-          echo "DB_URL=${{secrets.DB_URL}}" >> .env
-          echo "DB_USERNAME=${{secrets.DB_USERNAME}}" >> .env
-          echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
-          
+     
      # Gradlew 권한 부여 
      - name: Set gradlew permission
        run: |
@@ -74,25 +63,28 @@ jobs:
      # Add Known_hosts
      - name: Add Known_hosts
        run: |
-         ssh-keyscan -H ed25519 52.79.237.136 >> ~/.ssh/known_hosts
+         ssh-keyscan -H 52.79.237.136 >> ~/.ssh/known_hosts
+    # DB관련 => .env 
+     - name: 환경설정
+       run: |
+          ssh ubuntu@52.79.237.136 << EOF
+           # 기존의 파일 삭제
+           mkdir -p ~/app
+           cd ~/app
+           rm -f .env
+           
+           echo "DB_URL=${{secrets.DB_URL}}" >> ~/app/.env
+           echo "DB_USERNAME=${{secrets.DB_USERNAME}}" >> ~/app/.env
+           echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> ~/app/.env
+           chmod 600 ~/app/.env
+          EOF
+          
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
-        ssh ubuntu@52.79.237.136 << 'EOF'
-    
-          echo "DB_URL=${{ secrets.DB_URL }}" > .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-    
+         ssh ubuntu@52.79.237.136 << 'EOF'
           docker stop last-app || true
           docker rm last-app || true
-    
-          docker pull ${{ secrets.DOCKER_USERNAME }}/last-app:latest
-    
-          docker run -d \
-            --name last-app \
-            --env-file .env \
-            -p 9090:9090 \
-            ${{ secrets.DOCKER_USERNAME }}/last-app:latest
-    
-        EOF
+          docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
+          docker run -d --name last-app --env-file ~/app/.env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest
+         EOF
