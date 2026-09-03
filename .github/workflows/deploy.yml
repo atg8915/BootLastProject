@@ -78,9 +78,21 @@ jobs:
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
-         ssh ubuntu@52.79.237.136 << 'EOF'
-          docker stop last-app || true  
+        ssh ubuntu@52.79.237.136 << 'EOF'
+    
+          echo "DB_URL=${{ secrets.DB_URL }}" > .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+    
+          docker stop last-app || true
           docker rm last-app || true
-          docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
-          docker run -d --name last-app --env-file .env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest
-         EOF
+    
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/last-app:latest
+    
+          docker run -d \
+            --name last-app \
+            --env-file .env \
+            -p 9090:9090 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/last-app:latest
+    
+        EOF
