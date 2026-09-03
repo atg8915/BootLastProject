@@ -74,11 +74,11 @@ jobs:
      # Add Known_hosts
      - name: Add Known_hosts
        run: |
-         ssh-keyscan -H ed25519 3.35.11.75 >> ~/.ssh/known_hosts
+         ssh-keyscan -H ed25519 52.79.237.136 >> ~/.ssh/known_hosts
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
-         ssh ubuntu@3.35.11.75 << 'EOF'
+         ssh ubuntu@52.79.237.136 << 'EOF'
           docker stop last-app || true  
           docker rm last-app || true
           docker pull ${{secrets.DOCKER_NAME}}/last-app:latest
